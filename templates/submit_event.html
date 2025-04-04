@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Event</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Submit Event</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="user_id" class="form-label">Event creator (Staff ID):</label>
+                <input type="number" class="form-control" id="user_id" name="user_id" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="chapter_id" class="form-label">Chapter ID:</label>
+                <input type="text" class="form-control" id="chapter_id" name="chapter_id" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="chapter_version" class="form-label">Chapter Version:</label>
+                <input type="number" class="form-control" id="chapter_version" name="chapter_version" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="action" class="form-label">Action:</label>
+                <select class="form-select" id="action" name="action" required>
+                    {% for action in actions %}
+                        <option value="{{ action }}">{{ action }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="message" class="form-label">Message:</label>
+                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="upload_document" name="upload_document">
+                <label class="form-check-label" for="upload_document">Upload Document</label>
+            </div>
+
+            <div class="mb-3" id="documentField" style="display: none;">
+                <label for="document" class="form-label">Document:</label>
+                <input type="file" class="form-control" id="document" name="document">
+                <div class="form-text">Allowed file types: txt, pdf, doc, docx</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+
+    <script>
+        // Show/hide document upload field based on checkbox
+        document.getElementById('upload_document').addEventListener('change', function() {
+            document.getElementById('documentField').style.display =
+                this.checked ? 'block' : 'none';
+        });
+    </script>
+</body>
+</html>
