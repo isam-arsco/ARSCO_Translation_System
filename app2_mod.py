@@ -1,4 +1,4 @@
-# app2.py
+# This is a modified version of app2.py which saves the uploaded documents and supply an url
 import os
 import sys
 import pandas as pd
