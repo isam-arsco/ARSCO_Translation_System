@@ -1,5 +1,4 @@
 # app2.py
-
 import os
 import sys
 import pandas as pd
@@ -7,12 +6,17 @@ from datetime import datetime, timedelta
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, session
 from werkzeug.utils import secure_filename
+import time  # Import the time module
 
 app = Flask(__name__)
 app.secret_key = 'arsco_2030'  # Change this!
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # --- Authentication Decorator ---
 def login_required(f):
@@ -22,7 +26,6 @@ def login_required(f):
             flash('Please login to access this page', 'warning')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
-
     return decorated_function
 
 
@@ -42,6 +45,7 @@ class TranslationSystem:
             self.chapters_df = excel_data.parse('chapters')
             self.events_df = excel_data.parse('event')
             self.staff_df = excel_data.parse('staff')
+            print("[DEBUG] Columns in staff_df:", self.staff_df.columns)  # Add this line
             self.follow_up_df = excel_data.parse('follow_up')
 
             # Ensure email column exists
@@ -54,13 +58,30 @@ class TranslationSystem:
             print(f"[ERROR] Data loading failed: {e}")
             return False
 
-    # ... [Keep all your existing methods unchanged] ...
+    def load_data(self, max_retries=3, retry_delay=0.1):
+        """Explicitly load data from the Excel file with retry."""
+        for attempt in range(max_retries):
+            try:
+                excel_data = pd.ExcelFile(self.EXCEL_AUTH_FILE)
+                self.chapters_df = excel_data.parse('chapters')
+                self.events_df = excel_data.parse('event')
+                self.staff_df = excel_data.parse('staff')
+                self.follow_up_df = excel_data.parse('follow_up')
+                print(f"[DEBUG] Data reloaded successfully (attempt {attempt + 1})")
+                return True
+            except Exception as e:
+                print(f"[ERROR] Data reloading failed (attempt {attempt + 1}): {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay)
+                else:
+                    return False
+            return False
 
     def is_user_in_chapter_staff(self, user_id, chapter_id):
         """Check if user is authorized for the given chapter"""
         try:
             staff = self.chapters_df.loc[self.chapters_df['chapter_id'] == chapter_id,
-                                      ['manager', 'translator', 'checker_la', 'checker_sc']]
+                                            ['manager', 'translator', 'checker_la', 'checker_sc']]
             if staff.empty:
                 return False
             return user_id in staff.iloc[0].tolist()
@@ -174,50 +195,90 @@ def submit_event():
     if request.method == 'POST':
         try:
             # Get form data
-            user_id = int(request.form['user_id'])
-            chapter_id = request.form['chapter_id']
-            chapter_version = int(request.form['chapter_version'])
-            action = request.form['action']
-            action_id = action[0]
-            message = request.form['message']
+            user_id = request.form.get('user_id')
+            chapter_id = request.form.get('chapter_id')
+            chapter_version = request.form.get('chapter_version')
+            action = request.form.get('action')
+            message = request.form.get('message')
             upload_file = 'upload_document' in request.form
 
-            # Validate
-            if not translation_system.is_user_in_chapter_staff(user_id, chapter_id):
-                flash("You are not authorized for this chapter.", "error")
+            print(f"[DEBUG] Form data received: user_id={user_id}, chapter_id={chapter_id}, chapter_version={chapter_version}, action={action}, message={message}, upload_file={upload_file}")
+
+            # Validate data types
+            try:
+                user_id = int(user_id)
+                chapter_version = int(chapter_version)
+            except ValueError:
+                flash("Invalid input for User ID or Chapter Version. Please use numbers.", "error")
+                print("[DEBUG] ValueError: Invalid input for User ID or Chapter Version")
                 return redirect(request.url)
 
+            action_id = action[0] if action else None
+            print(f"[DEBUG] Parsed action_id: {action_id}")
+
+            # Validate authorization
+            if not translation_system.is_user_in_chapter_staff(user_id, chapter_id):
+                flash(f"You are not authorized for Chapter ID: {chapter_id} with User ID: {user_id}.", "error")
+                print(f"[DEBUG] Authorization failed for User ID: {user_id} and Chapter ID: {chapter_id}")
+                return redirect(request.url)
+            else:
+                print(f"[DEBUG] Authorization successful for User ID: {user_id} and Chapter ID: {chapter_id}")
+
             # Handle file upload
-            document_path = None
+            document_path = None  # Initialize document_path here
+            file_url = None
             if upload_file and 'document' in request.files:
                 file = request.files['document']
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
-                    l_name = translation_system.staff_df.loc[
-                        translation_system.staff_df['staff_id'] == user_id, 'l_name'].values[0]
-                    file_ext = os.path.splitext(filename)[1]
-                    new_file_name = (
-                        f"Ch{chapter_id}_version{chapter_version}_{action}_{l_name}_"
-                        f"{datetime.now().strftime('%Y%m%d%H%M%S')}{file_ext}"
-                    )
-                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_file_name)
-                    file.save(file_path)
-                    document_path = file_path
+                    try:
+                        l_name = translation_system.staff_df.loc[
+                            translation_system.staff_df['staff_id'] == user_id, 'l_name'].values[0]
+                        file_ext = os.path.splitext(filename)[1]
+                        new_file_name = (
+                            f"Ch{chapter_id}_version{chapter_version}_{l_name}_"
+                            f"{datetime.now().strftime('%Y%m%d%H%M%S')}{file_ext}"
+                        )
+                        file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_file_name)
+                        print(f"[DEBUG] Attempting to save file to: {file_path}")
+                        file.save(file_path)
+                        document_path = file_path
+                        file_url = url_for('uploaded_file', filename=new_file_name)
+                        print(f"[DEBUG] File uploaded successfully. Path: {document_path}, URL: {file_url}")
+                    except IndexError:
+                        flash(f"Error retrieving last name for User ID: {user_id}.", "warning")
+                        print(f"[DEBUG] IndexError: Error retrieving last name for User ID: {user_id}")
+                    except Exception as e:
+                        flash(f"Error handling uploaded file: {e}", "error")
+                        print(f"[ERROR] Error handling uploaded file: {e}")
+                        return redirect(request.url)
+                elif file:
+                    flash("Invalid file type. Allowed types: txt, pdf, doc, docx", "warning")
+                    print("[DEBUG] Invalid file type uploaded")
+                    return redirect(request.url)
 
             # Add records
-            url = "http://example.com"  # Placeholder
-            if (translation_system.add_event(user_id, chapter_id, chapter_version,
-                                           action, message, url, document_path) and
-                    translation_system.add_follow_up(chapter_id, action_id)):
-                flash("Event submitted successfully!", "success")
-                return redirect(url_for('index'))
+            if action_id:
+                if (translation_system.add_event(user_id, chapter_id, chapter_version,
+                                                    action, message, file_url, document_path) and
+                        translation_system.add_follow_up(chapter_id, action_id)):
+                    if translation_system.save_data():
+                        flash("Event submitted successfully!", "success")
+                        print("[DEBUG] Event submitted and saved successfully")
+                        return redirect(url_for('index'))
+                    else:
+                        flash("Failed to save event data to Excel.", "error")
+                        print("[ERROR] Failed to save event data to Excel")
+                else:
+                    flash("Failed to add event or update follow-up data.", "error")
+                    print("[ERROR] Failed to add event or update follow-up data")
             else:
-                flash("Failed to save event data.", "error")
+                flash("Action not selected.", "warning")
+                print("[DEBUG] Action not selected")
 
-        except ValueError:
-            flash("Invalid input. Please check your data.", "error")
         except Exception as e:
             flash(f"An unexpected error occurred: {e}", "error")
+            print(f"[CRITICAL ERROR] Unexpected error in submit_event: {e}")
 
     actions = [
         "1:Assign_translator", "2:Assign_checker_language", "3:Assign_checker_scientific",
@@ -229,6 +290,10 @@ def submit_event():
 @app.route('/view_events')
 @login_required
 def view_events():
+    if not translation_system.load_data():
+        flash("Error loading data. Please try again.", "error")
+        return redirect(url_for('index'))
+
     # Get filter parameters from request
     creator_id = request.args.get('creator_id', '')
     chapter_id = request.args.get('chapter_id', '')
@@ -245,16 +310,22 @@ def view_events():
         if chapter_id:
             filtered = filtered[filtered['chapter_id'] == chapter_id]
 
+        # Convert 'event_date' to datetime objects for proper comparison
+        filtered['event_date'] = pd.to_datetime(filtered['event_date'])
+
         if period != "all":
             today = datetime.now().date()
             if period == "today":
-                filtered = filtered[pd.to_datetime(filtered['event_date']).dt.date == today]
+                filtered = filtered[filtered['event_date'].dt.date == today]
             elif period == "last week":
                 last_week = today - timedelta(days=7)
-                filtered = filtered[pd.to_datetime(filtered['event_date']).dt.date >= last_week]
+                filtered = filtered[filtered['event_date'].dt.date >= last_week]
             elif period == "last month":
                 last_month = today - timedelta(days=30)
-                filtered = filtered[pd.to_datetime(filtered['event_date']).dt.date >= last_month]
+                filtered = filtered[filtered['event_date'].dt.date >= last_month]
+
+        # Sort the filtered DataFrame by event_date in descending order (newest first)
+        filtered = filtered.sort_values(by='event_date', ascending=False)
 
         # Convert to list of dicts and handle document_path
         events_list = []

@@ -1,0 +1,55 @@
+event_id,event_date,event_creator,chapter_id,chapter_version,action,message,document_path,url
+51,2025-04-05 13:09:57,1,73_1,2,4:Translator_sub,sdfsdf,uploads\Ch73_1_version2_AlRabban_20250405130957.pdf,/uploads/Ch73_1_version2_AlRabban_20250405130957.pdf
+50,2025-04-05 13:05:43,1,73_1,1,4:Translator_sub,fdfdf,uploads\Ch73_1_version1_4:Translator_sub_AlRabban_20250405130543.pdf,/uploads/Ch73_1_version1_4:Translator_sub_AlRabban_20250405130543.pdf
+49,2025-04-05 12:46:46,1,73_1,1,4:Translator_sub,dfggg,uploads\Ch73_1_version1_4:Translator_sub_AlRabban_20250405124646.pdf,/uploads/Ch73_1_version1_4:Translator_sub_AlRabban_20250405124646.pdf
+48,2025-04-05 12:45:41,1,73_1,1,1:Assign_translator,sfsdfsd,,
+47,2025-04-04 15:50:41,1,30_1,2,4:Translator_sub,pyuu,,http://example.com
+46,2025-04-04 15:44:55,1,30_1,1,4:Translator_sub,ppp,uploads/Ch30_1_version1_4:Translator_sub_AlRabban_20250404154455.pdf,http://example.com
+45,2025-04-04 15:34:24,1,3_1,2,7:Message,PPPP,uploads/Ch3_1_version2_7:Message_AlRabban_20250404153424.pdf,http://example.com
+44,2025-04-04 10:32:16,1,1_1,2,4:Translator_sub,pp,uploads/Ch1_1_version2_4:Translator_sub_AlRabban_20250404103216.pdf,http://....
+43,2025-04-04 10:19:38,1,34_1,2,5:Checker_language_sub,ppp,uploads/Ch34_1_version2_5:Checker_language_sub_AlRabban_20250404101938.pdf,http://....
+42,2025-04-04 10:16:54,1,35_1,1,4:Translator_sub,pp,uploads/Ch35_1_version1_4:Translator_sub_AlRabban_20250404101654.pdf,http://....
+41,1970-01-01 01:00:45.726000,14,4_1,1,sub_checker,attached checked chapter,,
+39,1970-01-01 01:00:45.720000,3,54_2,1,sub_translator,attached tranlated chapter,,
+40,1970-01-01 01:00:45.720000,3,54_3,1,sub_translator,attached tranlated chapter,,
+38,1970-01-01 01:00:45.717000,9,26_1,1,sub_translator,attached tranlated chapter,,
+35,1970-01-01 01:00:45.712000,1,69_1,1,assign_translator,Attached chapter for translation.,,
+8,1970-01-01 01:00:45.710000,1,11_1,1,assign_translator,Attached chapter for translation.,uploads/Ch3_Ver2_isa_submit_20250320002208.docx,
+24,1970-01-01 01:00:45.710000,1,52_1,1,assign_translator,Attached chapter for translation.,,
+29,1970-01-01 01:00:45.710000,1,56_1,1,assign_translator,Attached chapter for translation.,,
+30,1970-01-01 01:00:45.710000,1,58_1,1,assign_translator,Attached chapter for translation.,,
+32,1970-01-01 01:00:45.710000,1,64_1,1,assign_translator,Attached chapter for translation.,,
+33,1970-01-01 01:00:45.710000,1,65_1,1,assign_translator,Attached chapter for translation.,,
+34,1970-01-01 01:00:45.710000,1,67_1,1,assign_translator,Attached chapter for translation.,,
+2,1970-01-01 01:00:45.709000,1,1_1,1,assign_translator,Attached chapter for translation.,uploads/ch4_vers2_moza_20250319231430.docx,
+3,1970-01-01 01:00:45.709000,1,3_1,1,assign_translator,Attached chapter for translation.,uploads/3_4_isam_20250319232718.docx,
+9,1970-01-01 01:00:45.709000,1,12_1,1,assign_translator,Attached chapter for translation.,uploads/Ch3_Ver2_isa_submit_20250320002208.docx,
+10,1970-01-01 01:00:45.709000,1,13_1,1,assign_translator,Attached chapter for translation.,uploads/Ch3_Ver2_isa_submit_20250320002208.docx,
+37,1970-01-01 01:00:45.704000,7,4_1,1,sub_translator,attached tranlated chapter,,
+12,1970-01-01 01:00:45.699000,1,16_1,1,assign_translator,Attached chapter for translation.,,
+13,1970-01-01 01:00:45.699000,1,17_1,1,assign_translator,Attached chapter for translation.,,
+14,1970-01-01 01:00:45.699000,1,26_1,1,assign_translator,Attached chapter for translation.,,
+15,1970-01-01 01:00:45.699000,1,27_1,1,assign_translator,Attached chapter for translation.,,
+16,1970-01-01 01:00:45.699000,1,28_1,1,assign_translator,Attached chapter for translation.,,
+31,1970-01-01 01:00:45.699000,1,62_1,1,assign_translator,Attached chapter for translation.,,
+36,1970-01-01 01:00:45.699000,1,70_2,1,assign_translator,Attached chapter for translation.,,
+6,1970-01-01 01:00:45.698000,1,9_1,1,assign_translator,Attached chapter for translation.,uploads/Ch3_Ver2_isa_submit_20250320002208.docx,
+7,1970-01-01 01:00:45.698000,1,10_1,1,assign_translator,Attached chapter for translation.,uploads/Ch3_Ver2_isa_submit_20250320002208.docx,
+11,1970-01-01 01:00:45.698000,1,14_1,1,assign_translator,Attached chapter for translation.,,
+17,1970-01-01 01:00:45.698000,1,40_1,1,assign_translator,Attached chapter for translation.,,
+18,1970-01-01 01:00:45.698000,1,41_1,1,assign_translator,Attached chapter for translation.,,
+19,1970-01-01 01:00:45.698000,1,42_1,1,assign_translator,Attached chapter for translation.,,
+20,1970-01-01 01:00:45.698000,1,47_1,1,assign_translator,Attached chapter for translation.,,
+21,2025-02-10 00:00:00,1,48_1,1,assign_translator,Attached chapter for translation.,,
+22,2025-02-10 00:00:00,1,49_1,1,assign_translator,Attached chapter for translation.,,
+23,2025-02-10 00:00:00,1,50_1,1,assign_translator,Attached chapter for translation.,,
+25,2025-02-10 00:00:00,1,54_1,1,assign_translator,Attached chapter for translation.,,
+26,2025-02-10 00:00:00,1,54_2,1,assign_translator,Attached chapter for translation.,,
+27,2025-02-10 00:00:00,1,54_3,1,assign_translator,Attached chapter for translation.,,
+28,2025-02-10 00:00:00,1,55_1,1,assign_translator,Attached chapter for translation.,,
+5,2025-01-15 00:00:00,1,7_1,1,assign_translator,Attached chapter for translation.,uploads/Ch3_Ver2_isa_submit_20250320002208.docx,
+1,2025-01-10 00:00:00,1,0_1,1,assign_translator,Attached chapter for translation.,uploads/ch4_vers2_moza_20250319231430.docx,https://www.ishahrour.com/copy-of-publications-1
+4,2025-01-10 00:00:00,1,4_1,1,assign_translator,Attached chapter for translation.,uploads/2_3_pp_20250320001147.docx,
+52,2025-04-05 13:54:42,1,73_1,5,5:Checker_language_sub,qsdqs,uploads\Ch73_1_version5_AlRabban_20250405135442.pdf,/uploads/Ch73_1_version5_AlRabban_20250405135442.pdf
+53,2025-04-05 14:05:54,1,73_1,6,5:Checker_language_sub,rhhgh,uploads\Ch73_1_version6_AlRabban_20250405140554.doc,/uploads/Ch73_1_version6_AlRabban_20250405140554.doc
+54,2025-04-05 14:14:28,1,73_1,7,6:Checker_scientific_sub,tgrtgrtg,uploads\Ch73_1_version7_AlRabban_20250405141428.pdf,/uploads/Ch73_1_version7_AlRabban_20250405141428.pdf
